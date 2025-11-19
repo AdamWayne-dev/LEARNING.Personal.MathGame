@@ -1,16 +1,31 @@
 ﻿int questionMaxCount = 5;
 int currentQuestion = 0;
 int correctAnswers = 0;
+int difficulty = 0;
 
-void AskQuestion()
+void GameMenu()
+{
+    Console.WriteLine("Welcome to the Math Game!");
+    Console.WriteLine("You will be asked a series of math questions.");
+    Console.WriteLine("Try to answer them correctly!");
+    Console.WriteLine("There are 4 difficulties, please type the corresponding number for each difficulty:");
+    Console.WriteLine("1 - Easy (Numbers 1-25) || 2 - Medium (Numbers 25-50) || 3 - Hard (Numbers 50-75) || 4 - Einstein (Numbers 75-100)");
+    difficulty = CheckAnswer();
+    if (difficulty < 1 || difficulty > 4)
+    {
+        Console.WriteLine("Invalid difficulty selected. Defaulting to difficulty 1.");
+        difficulty = 1;
+    }
+}
+void AskQuestion(int level)
 {
     currentQuestion++;
-    Console.WriteLine($"Question {currentQuestion}:");
+    Console.WriteLine($"Question {currentQuestion} || Difficulty {difficulty}:");
     Random rand = new Random();
 
-    int num1 = rand.Next(1, 100);
-    int num2 = rand.Next(1, 100);
-    int clampedNum = Math.Clamp(num2 / 10, 1, 10);
+    int num1 = rand.Next(1, 25 * level);
+    int num2 = rand.Next(1, 25 * level);
+    int clampedNum = Math.Clamp(num2 / (5 * level), 1, (5 * level));
     int answer = 0;
     int expectedAnswer = 0;
     int newNum = 0;
@@ -89,9 +104,10 @@ void CheckDividendIsFullyDivisible(int firstNum, out int newNumber)
 }
 void PlayGame()
 {
+    GameMenu();
     while (currentQuestion < questionMaxCount)
     {
-        AskQuestion();
+        AskQuestion(difficulty);
     }
 }
 
