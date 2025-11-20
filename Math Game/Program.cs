@@ -25,7 +25,6 @@ void AskQuestion(int level)
 
     int num1 = rand.Next(1, 25 * level);
     int num2 = rand.Next(1, 25 * level);
-    int clampedNum = Math.Clamp(num2 / (5 * level), 1, (5 * level));
     int answer = 0;
     int expectedAnswer = 0;
     int newNum = 0;
@@ -46,25 +45,25 @@ void AskQuestion(int level)
             GiveFeedback(answer, expectedAnswer);
             break;
         case 3:
-            Console.WriteLine($"What is {num1} * {clampedNum}?");
+            Console.WriteLine($"What is {num1} * {num2}?");
             answer = CheckAnswer();
-            expectedAnswer = num1 * clampedNum;
+            expectedAnswer = num1 * num2;
             GiveFeedback(answer, expectedAnswer);
             break;
         case 4:
-            if(num1 % clampedNum != 0)
+            if(num1 % num2 != 0)
             {
                 CheckDividendIsFullyDivisible(num1, out newNum);
-                clampedNum = newNum;
+                num2 = newNum;
             }
-            Console.WriteLine($"What is {num1} / {clampedNum}");
+            Console.WriteLine($"What is {num1} / {num2}");
             answer = CheckAnswer();
-            expectedAnswer = num1 / clampedNum;
+            expectedAnswer = num1 / num2;
             GiveFeedback(answer, expectedAnswer);
             break;
     }
 }
-static int CheckAnswer()
+static int CheckAnswer() // checks the input is a valid value and then attempts to parse it.
 {
     string? input = Console.ReadLine();
 
@@ -89,9 +88,9 @@ void GiveFeedback(int playerAnswer, int questionAnswer)
     }
 }
 
-void CheckDividendIsFullyDivisible(int firstNum, out int newNumber)
+void CheckDividendIsFullyDivisible(int firstNum, out int newNumber) // checks to see if the dividend is fully divisible by any number based on difficulty
 {
-    for (int d = 1; d <= 10; d++)
+    for (int d = (5 * difficulty); d >= 2; d--)
     {
         if (firstNum % d == 0)
         {
