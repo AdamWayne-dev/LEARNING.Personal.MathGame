@@ -1,8 +1,13 @@
-﻿int questionMaxCount = 5;
+﻿using System.Collections.Generic;
+
+int questionMaxCount = 5;
 int currentQuestion = 0;
 int correctAnswers = 0;
 int difficulty = 0;
 int gameHistoryKeyCounter = 0;
+int timerStart = 0;
+int timerEnd = 0;
+int totalTime = 0;
 List<string> answersLog;
 Dictionary<int, List<string>> gameHistory;
 gameHistory = new Dictionary<int, List<string>>();
@@ -10,13 +15,21 @@ void GameMenu()
 {
     answersLog = new List<string>();
     Console.WriteLine("-------------------------------------------------------------------------------------------------------");
-    RainbowText("~~~                              Welcome to the Math Game!                                          ~~~");
+    RainbowText("                     --------------------------------------------------" +
+        "\n                         <<<<<<< Welcome to the Math Game! >>>>>>>>                                    \n" +
+        "                     --------------------------------------------------          ");
     Console.WriteLine();
-    Console.WriteLine("~~~    To Play the game, please press type '1' || To see your hi-scores, please type '2'.           ~~~");
+    Console.Write("~~~    To Play the game, please press type '");
+    RainbowText("1");
+    Console.Write("' || To see your hi-scores, please type '");
+    RainbowText("2");
+    Console.Write("'.           ~~~");
+    Console.WriteLine();
     Console.WriteLine("-------------------------------------------------------------------------------------------------------");
     int playerOption = CheckAnswer();
     if (playerOption == 1) 
     {
+        timerStart = DateTime.Now.Second;
         LoadMathGame();
     }
     if (playerOption == 2)
@@ -61,13 +74,16 @@ void LoadHiScores()
         RainbowText("-------------------------------------------------------------------------------------------------------");
         foreach (string question in value)
         {
+            Console.WriteLine();
             Console.WriteLine($" - {question}");
         }
         RainbowText("#######################################################################################################");
         Console.WriteLine("");
     }
     Console.WriteLine("-------------------------------------------------------------------------------------------------------");
-    Console.WriteLine("~~~                          Please press '1' to go back to the Menu.                               ~~~");
+    Console.Write("~~~                          Please press '");
+    RainbowText("1");
+    Console.Write("' to go back to the Menu.                               ~~~");
     Console.WriteLine("-------------------------------------------------------------------------------------------------------");
     int playerResponse = 0;
     while (playerResponse != 1)
@@ -116,7 +132,7 @@ void AskQuestion(int level)
             GiveFeedback(answer, expectedAnswer);
             break;
         case 2:
-            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"                                       What is {num1} - {num2}?                                   ");
             Console.ResetColor();
             answer = CheckAnswer();
@@ -125,7 +141,7 @@ void AskQuestion(int level)
             GiveFeedback(answer, expectedAnswer);
             break;
         case 3:
-            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.ForegroundColor = ConsoleColor.Magenta;
             Console.WriteLine($"                                       What is {num1} * {num2}?                                   ");
             Console.ResetColor();
             answer = CheckAnswer();
@@ -139,7 +155,7 @@ void AskQuestion(int level)
                 CheckDividendIsFullyDivisible(num1, out newNum);
                 num2 = newNum;
             }
-            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"                                       What is {num1} / {num2}                                    ");
             Console.ResetColor();
             answer = CheckAnswer();
@@ -199,9 +215,15 @@ void GameLoop()
     {
         AskQuestion(difficulty);
     }
+    timerEnd = DateTime.Now.Second;
+    totalTime = timerEnd - timerStart;
+    answersLog.Add($"Total time taken: {totalTime} seconds!");
     gameHistory.Add(gameHistoryKeyCounter, new List<string>(answersLog));
     Console.WriteLine("-------------------------------------------------------------------------------------------------------");
     Console.WriteLine($"~~~     Congratulations! You've answered {correctAnswers} out of {questionMaxCount} questions!     ~~~");
+    Console.ForegroundColor = ConsoleColor.Yellow;
+    Console.WriteLine($"~~~                     Your time taken: {Math.Abs(totalTime)} seconds.                           ~~~");
+    Console.ResetColor();
     Console.WriteLine();
     Console.WriteLine($"~~~           To try again, type '1' || to quit to the menu type '2'.                              ~~~");
     Console.WriteLine("-------------------------------------------------------------------------------------------------------");
@@ -235,6 +257,5 @@ void RainbowText(string text)
         Console.Write(c);
     }
     Console.ResetColor();
-    Console.WriteLine();
 }
 GameMenu();
